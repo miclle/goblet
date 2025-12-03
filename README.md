@@ -1,1 +1,1 @@
-# Golang Signle Page Binary Application (GSPBA)
+# Golang Single Page Binary Application

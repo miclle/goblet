@@ -1,1 +1,1 @@
-# go-react-fullstack
+# Golang Signle Page Binary Application (GSPBA)

@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Verify gofmt
+        shell: bash
+        run: |
+          mapfile -t files < <(find . -type f -name '*.go' -not -path './internal/website/node_modules/*')
+          if [ "${#files[@]}" -eq 0 ]; then
+            exit 0
+          fi
+          unformatted="$(gofmt -l "${files[@]}")"
+          if [ -n "$unformatted" ]; then
+            echo "The following Go files are not formatted:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Verify Go modules are tidy
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+      - name: Vet backend
+        run: go vet -tags development ./...
+
+      - name: Test backend
+        run: go test -trimpath -tags development ./...
+
+  frontend:
+    name: Frontend Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.14.0
+          cache: npm
+          cache-dependency-path: internal/website/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: internal/website
+        run: npm ci
+
+      - name: Lint frontend
+        working-directory: internal/website
+        run: npm run lint
+
+      - name: Build frontend
+        working-directory: internal/website
+        run: npm run build
+
+  build:
+    name: Build Artifacts
+    runs-on: ubuntu-latest
+    needs:
+      - backend
+      - frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.14.0
+          cache: npm
+          cache-dependency-path: internal/website/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: internal/website
+        run: npm ci
+
+      - name: Build embedded web assets
+        working-directory: internal/website
+        run: npm run build
+
+      - name: Build server binary
+        run: |
+          mkdir -p bin
+          go build -trimpath -o bin/app ./cmd/app
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build-${{ github.sha }}
+          path: bin/

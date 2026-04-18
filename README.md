@@ -14,7 +14,7 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 **Frontend:**
 
-- React 18, TypeScript 5.7, Vite 6, Tailwind CSS 4
+- React 19, TypeScript 6, Vite 8, Tailwind CSS 4
 - React Router v7, React Query v5
 - [shadcn/ui](https://ui.shadcn.com/) v4 component library
 - Vitest 4 for unit testing

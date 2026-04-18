@@ -1,56 +1,56 @@
 # AGENTS.md
 
-AI 编码助手在本项目中的统一技术规范。
+Technical specification for AI coding assistants working on this project.
 
-## 项目概述
+## Project Overview
 
-Go + React 前后端分离但最终编译为单个二进制分发的 Web 应用模板。后端将前端构建产物通过 `//go:embed` 嵌入到 Go 二进制中，生产部署只需一个可执行文件加数据库。
+A Go + React single-page application template that compiles into a single binary. The backend embeds frontend build output via `//go:embed`, so production deployment requires only one executable plus a database.
 
-## 技术栈
+## Tech Stack
 
-- 后端：Go 1.25 + `fox-gonic/fox` + GORM + PostgreSQL（默认）/ MySQL
-- 前端：React 18 + TypeScript 5 + Vite 6 + Tailwind CSS 4 + shadcn/ui
-  - React Router v7（路由）
-  - React Query v5（服务端状态）
-  - Axios（HTTP 客户端）
-  - Lucide React（图标）
+- Backend: Go 1.25 + `fox-gonic/fox` + GORM + PostgreSQL (default) / MySQL
+- Frontend: React 18 + TypeScript 5 + Vite 6 + Tailwind CSS 4 + shadcn/ui
+  - React Router v7 (routing)
+  - React Query v5 (server state)
+  - Axios (HTTP client)
+  - Lucide React (icons)
 
-## 开发命令
+## Development Commands
 
 ```bash
-task install        # 安装前后端依赖
-task dev            # 启动开发环境（热重载）
-task build          # 构建生产二进制（含前端）
-task build-all      # 多平台构建
-task run            # 生产模式运行
-task lint           # 自动修复代码风格并执行检查
-task check          # 完整检查（后端 + 前端类型 + mod tidy）
-task test           # 运行测试（race 检测 + 覆盖率）
-task clean          # 清理构建产物
-task update-tools   # 更新开发工具
+task install        # Install backend and frontend dependencies
+task dev            # Start development environment (hot reload)
+task build          # Build production binary (with embedded frontend)
+task build-all      # Cross-compile for multiple platforms
+task run            # Run in production mode
+task lint           # Auto-fix code style and run checks
+task check          # Full checks (backend + frontend types + mod tidy)
+task test           # Run tests (race detection + coverage)
+task clean          # Remove build artifacts
+task update-tools   # Install/update dev tools
 ```
 
-## 目录概览
+## Directory Overview
 
 ```text
-cmd/app/                      # 主程序入口与本地配置
-internal/config/              # YAML 基础配置加载（支持 PostgreSQL / MySQL）
-internal/entity/              # 数据模型与领域类型
-internal/handler/             # HTTP 处理器、路由注册、中间件
-internal/service/             # 业务逻辑、数据库操作
-internal/errors/              # 统一错误类型
-internal/website/             # SPA 嵌入
-  ├── assets_development.go   #   开发模式：反向代理到 Vite dev server
-  ├── assets_production.go    #   生产模式：go:embed 嵌入静态资源
+cmd/app/                      # Application entry point and local config
+internal/config/              # YAML config loading (PostgreSQL / MySQL)
+internal/entity/              # Data models and domain types
+internal/handler/             # HTTP handlers, route registration, middleware
+internal/service/             # Business logic, database operations
+internal/errors/              # Centralized error types
+internal/website/             # Embedded SPA
+  ├── assets_development.go   #   Dev mode: reverse-proxy to Vite dev server
+  ├── assets_production.go    #   Prod mode: go:embed static assets
   ├── package.json
   ├── vite.config.ts
   ├── tsconfig*.json
   ├── eslint.config.js
   ├── vitest.config.ts
-  ├── components.json         #   shadcn 配置
+  ├── components.json         #   shadcn configuration
   ├── index.html
   ├── public/
-  ├── build/                  #   vite 产物（被 embed）
+  ├── build/                  #   Vite build output (embedded)
   └── src/
       ├── main.tsx
       ├── App.tsx
@@ -59,44 +59,44 @@ internal/website/             # SPA 嵌入
       ├── api/
       ├── types/
       ├── views/
-      ├── components/ (含 ui/ by shadcn)
+      ├── components/ (includes ui/ by shadcn)
       ├── layouts/
       ├── hooks/
       ├── context/
       └── lib/
-pkg/gormlog/                  # GORM 日志适配器
+pkg/gormlog/                  # GORM logger adapter
 ```
 
-## 核心架构约束
+## Core Architecture Constraints
 
-### 后端
+### Backend
 
-- 分层保持为 `Handler -> Service -> Entity`
-- 路由统一在 `internal/handler/handler.go` 中注册
-- 支持 PostgreSQL（默认）和 MySQL，通过 YAML 配置 `driver` 切换
-- YAML 仅保留基础启动配置（地址、数据库驱动和连接字符串）
+- Follow the `Handler -> Service -> Entity` layering
+- Register all routes in `internal/handler/handler.go`
+- PostgreSQL (default) and MySQL are supported; switch via `driver` in YAML config
+- YAML config contains only bootstrap settings (address, database driver, connection string)
 
-### 前端
+### Frontend
 
-- 路由使用 React Router v7
-- 服务端状态管理使用 React Query（`@tanstack/react-query`）
-- API 调用放在 `internal/website/src/api/`
-- 类型定义放在 `internal/website/src/types/`
-- 页面放在 `internal/website/src/views/`
-- 优先复用现有 shadcn/ui 与 Tailwind 风格
+- Routing: React Router v7
+- Server state management: React Query (`@tanstack/react-query`)
+- API calls go in `internal/website/src/api/`
+- Type definitions go in `internal/website/src/types/`
+- Pages go in `internal/website/src/views/`
+- Prefer reusing existing shadcn/ui components and Tailwind styles
 
-### 单二进制嵌入机制
+### Single Binary Embedding
 
-- `internal/website/assets_development.go`（`//go:build development`）反向代理到 Vite dev server
-- `internal/website/assets_production.go`（`//go:build !development`）使用 `//go:embed build/*` 嵌入静态资源
-- NotFound 处理器：`/api` 前缀返回 JSON 404，其余走 SPA index fallback
+- `internal/website/assets_development.go` (`//go:build development`) reverse-proxies to Vite dev server
+- `internal/website/assets_production.go` (`//go:build !development`) serves assets via `//go:embed build/*`
+- NotFound handler: `/api` prefix returns JSON 404; all other routes fall back to SPA index
 
-## 强制规则
+## Mandatory Rules
 
-- 遵守现有分层和目录结构，不为局部改动重塑架构
-- 提交前执行 `task check`
+- Respect the existing layering and directory structure; do not reshape architecture for local changes
+- Run `task check` before committing
 
-## 提交前最小检查
+## Pre-commit Checklist
 
-- 执行 `task check`，未通过不得提交
-- 检查是否需要同步更新前端 API/types
+- Run `task check`; do not commit if it fails
+- Verify whether frontend API calls or types need to be updated accordingly

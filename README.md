@@ -6,20 +6,30 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 ## Tech Stack
 
-- Backend: Go 1.25, `fox-gonic/fox`, GORM
-- Database: PostgreSQL (default) / MySQL
-- Frontend: React 18, TypeScript 5, Vite 6, Tailwind CSS 4, shadcn/ui
-  - React Router v7
-  - React Query v5
+**Backend:**
+
+- Go 1.25, [fox-gonic/fox](https://github.com/fox-gonic/fox) (Gin-based HTTP framework)
+- GORM with PostgreSQL (default) or MySQL driver
+- [Viper](https://github.com/spf13/viper) for configuration
+
+**Frontend:**
+
+- React 18, TypeScript 5.7, Vite 6, Tailwind CSS 4
+- React Router v7, React Query v5
+- [shadcn/ui](https://ui.shadcn.com/) v4 component library
+- Vitest 4 for unit testing
 
 ## Requirements
 
 - Go 1.25+
 - Node.js 22.14+
 - PostgreSQL or MySQL
-- [Task](https://taskfile.dev/)
-- `reflex` for `task dev` hot reload
-- `golangci-lint` for `task check`
+- [Task](https://taskfile.dev/) (task runner)
+- `reflex` — file-watching hot reload for `task dev`
+- `staticcheck` — static analysis for `task check`
+- `golangci-lint` — comprehensive linting for `task check`
+
+Run `task update-tools` to install `reflex`, `staticcheck`, and `golangci-lint`.
 
 ## Quick Start
 
@@ -42,32 +52,51 @@ Start development:
 task dev
 ```
 
+This starts both the Vite dev server (port 5173) and the Go server with hot reload (port 9000).
+
 ## Common Commands
 
 ```bash
 task install        # Install Go and frontend dependencies
-task dev            # Start Vite + Go hot reload
-task build          # Build the server binary with embedded frontend
-task build-all      # Cross-build server binaries
-task run            # Run the server with local config
-task lint           # Auto-fix Go style and run frontend lint
-task check          # CI-aligned checks without rewriting files
-task test           # Go tests with race detection and coverage
+task dev            # Start Vite dev server + Go hot reload
+task build          # Build production binary with embedded frontend
+task build-all      # Cross-compile for linux/darwin/windows × amd64/arm64
+task run            # Run the production binary with local config
+task lint           # Auto-fix: go mod tidy, gofmt, go vet, staticcheck, ESLint
+task check          # CI-aligned checks (read-only, no file modifications)
+task test           # Go tests (race + coverage) + frontend Vitest
 task clean          # Remove build artifacts
-task update-tools   # Install/update dev tools
+task update-tools   # Install/update reflex, staticcheck, golangci-lint
 ```
 
 ## Architecture
 
 ```
-cmd/app/              → Application entry point
-internal/config/      → YAML config loading
-internal/entity/      → Data models (GORM)
-internal/handler/     → HTTP handlers + routes + middleware
-internal/service/     → Business logic + DB operations
-internal/errors/      → Centralized error types
-internal/website/     → Embedded SPA (React + Vite)
-pkg/gormlog/          → GORM logger adapter
+.
+├── cmd/app/                        → Application entry point
+│   ├── main.go
+│   └── config.example.yaml
+├── internal/
+│   ├── config/                     → YAML config loading (Viper)
+│   ├── entity/                     → Data models (GORM)
+│   ├── handler/                    → HTTP handlers + routes + middleware
+│   ├── service/                    → Business logic + DB operations
+│   ├── errors/                     → Centralized error types
+│   └── website/                    → Embedded SPA (React + Vite)
+│       ├── assets_development.go   → Dev: reverse-proxy to Vite dev server
+│       ├── assets_production.go    → Prod: //go:embed build/*
+│       └── src/
+│           ├── api/                → API client (Axios)
+│           ├── components/ui/      → shadcn/ui components
+│           ├── context/            → React context providers
+│           ├── hooks/              → Custom React hooks
+│           ├── layouts/            → Page layout components
+│           ├── lib/                → Utilities (React Query client, cn helper)
+│           ├── types/              → TypeScript type definitions
+│           └── views/              → Page-level route components
+├── pkg/gormlog/                    → GORM logger adapter
+├── .github/workflows/              → CI workflows
+└── Taskfile.yaml                   → Task runner configuration
 ```
 
 ### Single Binary Embedding
@@ -79,11 +108,13 @@ The key pattern: two Go files with build tags control how frontend assets are se
 
 ## Configuration
 
-The YAML config keeps only bootstrap settings:
+The YAML config (`config.example.yaml`) keeps only bootstrap settings:
 
-- `addr`: Listen address (e.g., `0.0.0.0:9000`)
-- `driver`: Database driver (`postgres` or `mysql`)
-- `dsn`: Database connection string
+```yaml
+addr: "0.0.0.0:9000"
+driver: postgres   # or "mysql"
+dsn: "host=localhost port=5432 user=postgres password=postgres dbname=app sslmode=disable"
+```
 
 ## Build & Deployment
 
@@ -91,6 +122,21 @@ The YAML config keeps only bootstrap settings:
 task build          # Build production binary (includes frontend)
 ./bin/app -c config.yaml
 ```
+
+Cross-compile for all supported platforms:
+
+```bash
+task build-all      # Outputs to bin/ for each OS/arch combination
+```
+
+## CI
+
+GitHub Actions workflows are included:
+
+- **ci.yml** — runs `task check` and `task test`
+- **golangci-lint.yml** — runs golangci-lint on PRs
+- **dependency-review.yml** — reviews dependency changes on PRs
+- **actionlint.yml** — lints GitHub Actions workflow files
 
 ## License
 

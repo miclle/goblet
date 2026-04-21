@@ -2,15 +2,6 @@ version: "3"
 
 vars:
   WEBSITE_DIR: website
-  BIN_DIR: bin
-  APP_NAME: app
-  BUILD_PLATFORMS: linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
-  GIT_COMMIT:
-    sh: git rev-parse --short HEAD
-  BUILD_TIME:
-    sh: TZ='Asia/Shanghai' date "+%Y-%m-%d-%H-%M-%S"
-  LDFLAGS:
-    "-s -w -X 'main.CommitID={{.GIT_COMMIT}}' -X 'main.BuildTime={{.BUILD_TIME}}'"
 
 tasks:
   default:
@@ -61,30 +52,13 @@ tasks:
     desc: Build the server binary for the current platform
     cmds:
       - cd {{.WEBSITE_DIR}} && npm install && npm run build
-      - mkdir -p {{.BIN_DIR}}
-      - |
-        output="{{.BIN_DIR}}/{{.APP_NAME}}$(go env GOEXE)"
-        echo "Building ${output}"
-        CGO_ENABLED=0 \
-          go build -trimpath -ldflags "{{.LDFLAGS}}" -o "$output" ./cmd/app/
+      - ./scripts/build.sh
 
   build-all:
     desc: Build server binaries for all supported platforms
     cmds:
       - cd {{.WEBSITE_DIR}} && npm install && npm run build
-      - mkdir -p {{.BIN_DIR}}
-      - |
-        for platform in {{.BUILD_PLATFORMS}}; do
-          GOOS_VALUE="${platform%/*}"
-          GOARCH_VALUE="${platform#*/}"
-          output="{{.BIN_DIR}}/{{.APP_NAME}}_${GOOS_VALUE}_${GOARCH_VALUE}"
-          if [ "$GOOS_VALUE" = "windows" ]; then
-            output="${output}.exe"
-          fi
-          echo "Building ${output}"
-          CGO_ENABLED=0 GOOS="$GOOS_VALUE" GOARCH="$GOARCH_VALUE" \
-            go build -trimpath -ldflags "{{.LDFLAGS}}" -o "$output" ./cmd/app/
-        done
+      - ./scripts/build-all.sh
 
   clean:
     desc: Clean build artifacts
@@ -115,12 +89,7 @@ tasks:
     cmds:
       - gofmt -l .
       - go vet -tags development ./...
-      - |
-        LINT_BIN="$(go env GOPATH)/bin/golangci-lint"
-        if [ ! -x "$LINT_BIN" ]; then
-          LINT_BIN=golangci-lint
-        fi
-        "$LINT_BIN" run --build-tags=development ./...
+      - ./scripts/check-lint.sh
 
   check-frontend-types:
     internal: true
@@ -130,18 +99,7 @@ tasks:
   check-mod-tidy:
     internal: true
     cmds:
-      - |
-        cp go.mod go.mod.bak
-        cp go.sum go.sum.bak
-        go mod tidy
-        MOD_CHANGES=$(diff go.mod go.mod.bak | wc -l)
-        SUM_CHANGES=$(diff go.sum go.sum.bak | wc -l)
-        mv go.mod.bak go.mod
-        mv go.sum.bak go.sum
-        if [ $MOD_CHANGES -ne 0 ] || [ $SUM_CHANGES -ne 0 ]; then
-          echo "go.mod or go.sum is not tidy. Run 'task lint' to fix."
-          exit 1
-        fi
+      - ./scripts/check-mod-tidy.sh
 
   # ---------- Testing ----------
 
@@ -156,19 +114,10 @@ tasks:
   kill-vite:
     internal: true
     cmds:
-      - |
-        ps aux | grep "[n]pm run dev" | grep "website" | awk '{print $2}' | xargs kill -9 2>/dev/null || true
-        sleep 1
+      - ./scripts/kill-vite.sh
 
   update-tools:
     desc: Install/update development tools (reflex, staticcheck, golangci-lint)
     run: once
     cmds:
-      - which reflex > /dev/null 2>&1 || go install github.com/cespare/reflex@latest
-      - which staticcheck > /dev/null 2>&1 || go install honnef.co/go/tools/cmd/staticcheck@latest
-      - |
-        GOBIN="$(go env GOPATH)/bin"
-        mkdir -p "$GOBIN"
-        if [ ! -x "$GOBIN/golangci-lint" ]; then
-          GOBIN="$GOBIN" GO111MODULE=on go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.0
-        fi
+      - ./scripts/install-tools.sh

@@ -95,6 +95,7 @@ task update-tools   # Install/update reflex, staticcheck, golangci-lint
 │       ├── lib/                    → Utilities (React Query client, cn helper)
 │       ├── types/                  → TypeScript type definitions
 │       └── views/                  → Page-level route components
+├── scripts/                        → Shell helpers invoked by Taskfile
 ├── .github/workflows/              → CI workflows
 └── Taskfile.yaml                   → Task runner configuration
 ```

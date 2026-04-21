@@ -65,6 +65,7 @@ website/                      # Embedded SPA (frontend + go:embed glue)
       ├── hooks/
       ├── context/
       └── lib/
+scripts/                      # Shell helpers invoked by Taskfile (build, check, tooling)
 ```
 
 ## Core Architecture Constraints

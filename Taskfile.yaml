@@ -1,7 +1,7 @@
 version: "3"
 
 vars:
-  WEBSITE_DIR: internal/website
+  WEBSITE_DIR: website
   BIN_DIR: bin
   APP_NAME: app
   BUILD_PLATFORMS: linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
@@ -45,7 +45,7 @@ tasks:
         reflex \
           -d none -s \
           -r '\.go$' \
-          -R 'internal/website/' \
+          -R 'website/' \
           -R 'tmp' \
           -- go run -trimpath -tags development ./cmd/app/ -c cmd/app/config.local.yaml
 
@@ -157,7 +157,7 @@ tasks:
     internal: true
     cmds:
       - |
-        ps aux | grep "[n]pm run dev" | grep "internal/website" | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+        ps aux | grep "[n]pm run dev" | grep "website" | awk '{print $2}' | xargs kill -9 2>/dev/null || true
         sleep 1
 
   update-tools:

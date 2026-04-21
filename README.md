@@ -81,20 +81,20 @@ task update-tools   # Install/update reflex, staticcheck, golangci-lint
 │   ├── entity/                     → Data models (GORM)
 │   ├── handler/                    → HTTP handlers + routes + middleware
 │   ├── service/                    → Business logic + DB operations
-│   ├── errors/                     → Centralized error types
-│   └── website/                    → Embedded SPA (React + Vite)
-│       ├── assets_development.go   → Dev: reverse-proxy to Vite dev server
-│       ├── assets_production.go    → Prod: //go:embed build/*
-│       └── src/
-│           ├── api/                → API client (Axios)
-│           ├── components/ui/      → shadcn/ui components
-│           ├── context/            → React context providers
-│           ├── hooks/              → Custom React hooks
-│           ├── layouts/            → Page layout components
-│           ├── lib/                → Utilities (React Query client, cn helper)
-│           ├── types/              → TypeScript type definitions
-│           └── views/              → Page-level route components
+│   └── errors/                     → Centralized error types
 ├── pkg/gormlog/                    → GORM logger adapter
+├── website/                        → Embedded SPA (React + Vite)
+│   ├── assets_development.go       → Dev: reverse-proxy to Vite dev server
+│   ├── assets_production.go        → Prod: //go:embed build/*
+│   └── src/
+│       ├── api/                    → API client (Axios)
+│       ├── components/ui/          → shadcn/ui components
+│       ├── context/                → React context providers
+│       ├── hooks/                  → Custom React hooks
+│       ├── layouts/                → Page layout components
+│       ├── lib/                    → Utilities (React Query client, cn helper)
+│       ├── types/                  → TypeScript type definitions
+│       └── views/                  → Page-level route components
 ├── .github/workflows/              → CI workflows
 └── Taskfile.yaml                   → Task runner configuration
 ```

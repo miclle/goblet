@@ -5,7 +5,7 @@ import (
 	"github.com/fox-gonic/fox"
 
 	"github.com/miclle/go-single-page-binary-app/internal/service"
-	"github.com/miclle/go-single-page-binary-app/internal/website"
+	"github.com/miclle/go-single-page-binary-app/website"
 )
 
 // Ctrl is the controller that holds service dependencies and registers routes.

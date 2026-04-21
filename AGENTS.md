@@ -39,7 +39,8 @@ internal/entity/              # Data models and domain types
 internal/handler/             # HTTP handlers, route registration, middleware
 internal/service/             # Business logic, database operations
 internal/errors/              # Centralized error types
-internal/website/             # Embedded SPA
+pkg/gormlog/                  # GORM logger adapter
+website/                      # Embedded SPA (frontend + go:embed glue)
   ├── assets_development.go   #   Dev mode: reverse-proxy to Vite dev server
   ├── assets_production.go    #   Prod mode: go:embed static assets
   ├── package.json
@@ -64,7 +65,6 @@ internal/website/             # Embedded SPA
       ├── hooks/
       ├── context/
       └── lib/
-pkg/gormlog/                  # GORM logger adapter
 ```
 
 ## Core Architecture Constraints
@@ -80,15 +80,15 @@ pkg/gormlog/                  # GORM logger adapter
 
 - Routing: React Router v7
 - Server state management: React Query (`@tanstack/react-query`)
-- API calls go in `internal/website/src/api/`
-- Type definitions go in `internal/website/src/types/`
-- Pages go in `internal/website/src/views/`
+- API calls go in `website/src/api/`
+- Type definitions go in `website/src/types/`
+- Pages go in `website/src/views/`
 - Prefer reusing existing shadcn/ui components and Tailwind styles
 
 ### Single Binary Embedding
 
-- `internal/website/assets_development.go` (`//go:build development`) reverse-proxies to Vite dev server
-- `internal/website/assets_production.go` (`//go:build !development`) serves assets via `//go:embed build/*`
+- `website/assets_development.go` (`//go:build development`) reverse-proxies to Vite dev server
+- `website/assets_production.go` (`//go:build !development`) serves assets via `//go:embed build/*`
 - NotFound handler: `/api` prefix returns JSON 404; all other routes fall back to SPA index
 
 ## Mandatory Rules

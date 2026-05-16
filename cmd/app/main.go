@@ -9,6 +9,7 @@ import (
 	"github.com/fox-gonic/fox"
 
 	"github.com/miclle/goblet/internal/config"
+	"github.com/miclle/goblet/internal/database"
 	"github.com/miclle/goblet/internal/handler"
 	"github.com/miclle/goblet/internal/service"
 )
@@ -30,7 +31,18 @@ func main() {
 	}
 
 	ctx := context.Background()
-	svc, err := service.New(ctx, cfg.Driver, cfg.DSN)
+
+	db, err := database.Open(ctx, cfg.Driver, cfg.DSN)
+	if err != nil {
+		log.Fatalf("open database: %v", err)
+	}
+	log.Printf("database connected")
+
+	if err := database.Migrate(ctx, db); err != nil {
+		log.Fatalf("migrate database: %v", err)
+	}
+
+	svc, err := service.New(ctx, db)
 	if err != nil {
 		log.Fatalf("init service: %v", err)
 	}

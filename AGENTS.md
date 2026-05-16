@@ -35,10 +35,15 @@ task update-tools   # Install/update dev tools
 ```text
 cmd/app/                      # Application entry point and local config
 internal/config/              # YAML config loading (PostgreSQL / MySQL)
+internal/database/            # GORM database connection and schema migration
 internal/entity/              # Data models and domain types
 internal/handler/             # HTTP handlers, route registration, middleware
 internal/service/             # Business logic, database operations
 internal/errors/              # Centralized error types
+pkg/httperr/                  # Generic HTTP-status-aware errors
+pkg/id/                       # Prefixed ULID helpers
+pkg/secret/                   # Random secret and digest helpers
+pkg/strutil/                  # Pure string helpers
 pkg/gormlog/                  # GORM logger adapter
 website/                      # Embedded SPA (frontend + go:embed glue)
   ├── assets_development.go   #   Dev mode: reverse-proxy to Vite dev server
@@ -74,8 +79,10 @@ scripts/                      # Shell helpers invoked by Taskfile (build, check,
 
 - Follow the `Handler -> Service -> Entity` layering
 - Register all routes in `internal/handler/handler.go`
+- Keep database connection and migration setup in `internal/database/`; services receive a ready `*gorm.DB`
 - PostgreSQL (default) and MySQL are supported; switch via `driver` in YAML config
 - YAML config contains only bootstrap settings (address, database driver, connection string)
+- Configuration files may reference environment variables with `${NAME}` or `${NAME:-fallback}`
 
 ### Frontend
 

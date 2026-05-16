@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -22,6 +23,7 @@ func Load(path string) (*Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read config file: %w", err)
 	}
+	cfgFile = []byte(expandEnv(string(cfgFile)))
 
 	v := viper.New()
 	v.SetConfigType("yaml")
@@ -48,4 +50,17 @@ func Load(path string) (*Config, error) {
 	}
 
 	return &cfg, nil
+}
+
+func expandEnv(s string) string {
+	return os.Expand(s, func(name string) string {
+		key, fallback, ok := strings.Cut(name, ":-")
+		if !ok {
+			return os.Getenv(name)
+		}
+		if value := os.Getenv(key); value != "" {
+			return value
+		}
+		return fallback
+	})
 }

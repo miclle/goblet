@@ -14,6 +14,11 @@ func (e *Error) Error() string {
 	return e.Message
 }
 
+// StatusCode reports the HTTP status the router should emit.
+func (e *Error) StatusCode() int {
+	return e.Code
+}
+
 // Common errors.
 var (
 	// ErrNotFound indicates the requested resource was not found.

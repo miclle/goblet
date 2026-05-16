@@ -10,8 +10,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/miclle/go-single-page-binary-app/internal/entity"
-	"github.com/miclle/go-single-page-binary-app/pkg/gormlog"
+	"github.com/miclle/goblet/internal/entity"
+	"github.com/miclle/goblet/pkg/gormlog"
 )
 
 // Service holds the database connection and provides business logic methods.

@@ -4,8 +4,8 @@ package handler
 import (
 	"github.com/fox-gonic/fox"
 
-	"github.com/miclle/go-single-page-binary-app/internal/service"
-	"github.com/miclle/go-single-page-binary-app/website"
+	"github.com/miclle/goblet/internal/service"
+	"github.com/miclle/goblet/website"
 )
 
 // Ctrl is the controller that holds service dependencies and registers routes.
@@ -40,5 +40,5 @@ func (ctrl *Ctrl) Health(c *fox.Context) string {
 
 // Hello returns a greeting message.
 func (ctrl *Ctrl) Hello(c *fox.Context) any {
-	return map[string]string{"message": "Hello from Go Single Page Binary App!"}
+	return map[string]string{"message": "Hello from Goblet!"}
 }

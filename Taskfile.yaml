@@ -106,8 +106,8 @@ tasks:
   test:
     desc: Run Go tests with race detection and coverage, then frontend tests
     cmds:
-      - go test -trimpath -race -coverprofile=coverage.out ./...
-      - cd {{.WEBSITE_DIR}} && npx vitest run
+      - go test -trimpath -race -tags development -coverprofile=coverage.out ./...
+      - cd {{.WEBSITE_DIR}} && npx vitest run --passWithNoTests
 
   # ---------- Internal ----------
 

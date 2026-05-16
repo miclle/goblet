@@ -8,9 +8,9 @@ import (
 
 	"github.com/fox-gonic/fox"
 
-	"github.com/miclle/go-single-page-binary-app/internal/config"
-	"github.com/miclle/go-single-page-binary-app/internal/handler"
-	"github.com/miclle/go-single-page-binary-app/internal/service"
+	"github.com/miclle/goblet/internal/config"
+	"github.com/miclle/goblet/internal/handler"
+	"github.com/miclle/goblet/internal/service"
 )
 
 var (

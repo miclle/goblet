@@ -1,4 +1,4 @@
-# Go Single Page Binary App
+# Goblet
 
 A project template for building Go + React single-page applications that compile into a single binary.
 
@@ -8,7 +8,7 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 **Backend:**
 
-- Go 1.25, [fox-gonic/fox](https://github.com/fox-gonic/fox) (Gin-based HTTP framework)
+- Go 1.26, [fox-gonic/fox](https://github.com/fox-gonic/fox) (Gin-based HTTP framework)
 - GORM with PostgreSQL (default) or MySQL driver
 - [Viper](https://github.com/spf13/viper) for configuration
 
@@ -21,7 +21,7 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 ## Requirements
 
-- Go 1.25+
+- Go 1.26+
 - Node.js 22.14+
 - PostgreSQL or MySQL
 - [Task](https://taskfile.dev/) (task runner)
@@ -34,8 +34,8 @@ Run `task update-tools` to install `reflex`, `staticcheck`, and `golangci-lint`.
 ## Quick Start
 
 ```bash
-git clone https://github.com/miclle/go-single-page-binary-app.git
-cd go-single-page-binary-app
+git clone https://github.com/miclle/goblet.git
+cd goblet
 task install
 ```
 

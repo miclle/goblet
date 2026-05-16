@@ -8,7 +8,7 @@ A Go + React single-page application template that compiles into a single binary
 
 ## Tech Stack
 
-- Backend: Go 1.25 + `fox-gonic/fox` + GORM + PostgreSQL (default) / MySQL
+- Backend: Go 1.26 + `fox-gonic/fox` + GORM + PostgreSQL (default) / MySQL
 - Frontend: React 19 + TypeScript 6 + Vite 8 + Tailwind CSS 4 + shadcn/ui
   - React Router v7 (routing)
   - React Query v5 (server state)

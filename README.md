@@ -54,6 +54,14 @@ task dev
 
 This starts both the Vite dev server (port 5173) and the Go server with hot reload (port 9000).
 
+To avoid port conflicts when running multiple local apps, override the ports per session:
+
+```bash
+GOBLET_HTTP_PORT=9100 GOBLET_VITE_PORT=3100 task dev
+```
+
+`task dev` wires those values through Vite, the Vite `/api/v1` proxy, and the development asset reverse proxy.
+
 ## Common Commands
 
 ```bash
@@ -112,7 +120,7 @@ The key pattern: two Go files with build tags control how frontend assets are se
 The YAML config (`config.example.yaml`) keeps only bootstrap settings:
 
 ```yaml
-addr: "0.0.0.0:9000"
+addr: "0.0.0.0:${GOBLET_HTTP_PORT:-9000}"
 driver: postgres   # or "mysql"
 dsn: "host=localhost port=5432 user=postgres password=postgres dbname=app sslmode=disable"
 ```
@@ -134,7 +142,7 @@ task build-all      # Outputs to bin/ for each OS/arch combination
 
 GitHub Actions workflows are included:
 
-- **ci.yml** — runs `task check` and `task test`
+- **ci.yml** — runs backend gofmt/vet/staticcheck/tests, frontend lint/type-check/tests/build, and an embedded binary build
 - **golangci-lint.yml** — runs golangci-lint on PRs
 - **dependency-review.yml** — reviews dependency changes on PRs
 - **actionlint.yml** — lints GitHub Actions workflow files

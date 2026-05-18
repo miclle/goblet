@@ -1,4 +1,4 @@
-addr: "0.0.0.0:9000"
+addr: "0.0.0.0:${GOBLET_HTTP_PORT:-9000}"
 
 # Database driver: "postgres" (default) or "mysql"
 driver: postgres

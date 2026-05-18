@@ -46,10 +46,16 @@ jobs:
           git diff --exit-code -- go.mod go.sum
 
       - name: Vet backend
-        run: go vet -tags development ./...
+        run: ./scripts/go-packages.sh | xargs go vet -tags development
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
+        run: ./scripts/go-packages.sh | xargs staticcheck -tags development
 
       - name: Test backend
-        run: go test -trimpath -tags development ./...
+        run: ./scripts/go-packages.sh | xargs go test -trimpath -tags development
 
   frontend:
     name: Frontend Checks
@@ -73,6 +79,14 @@ jobs:
       - name: Lint frontend
         working-directory: website
         run: npm run lint
+
+      - name: Type-check frontend
+        working-directory: website
+        run: npx tsc -b
+
+      - name: Test frontend
+        working-directory: website
+        run: npm run test
 
       - name: Build frontend
         working-directory: website

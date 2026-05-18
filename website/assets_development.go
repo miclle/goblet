@@ -24,14 +24,8 @@ var (
 )
 
 func init() {
-	var (
-		scheme = "http"
-		host   = "localhost"
-		port   = "5173"
-		err    error
-	)
-
-	origin, err = url.Parse(fmt.Sprintf("%s://%s:%s", scheme, host, port))
+	var err error
+	origin, err = url.Parse(devServerURLFromEnvironment())
 	if err != nil {
 		fmt.Printf("Fail to parse url: %+v", err)
 		os.Exit(1)
@@ -50,6 +44,17 @@ func init() {
 		fp := entry.Name()
 		proxyRoutes = append(proxyRoutes, fp)
 	}
+}
+
+func devServerURLFromEnvironment() string {
+	if devServerURL := os.Getenv("GOBLET_VITE_DEV_SERVER_URL"); devServerURL != "" {
+		return devServerURL
+	}
+	port := os.Getenv("GOBLET_VITE_PORT")
+	if port == "" {
+		port = "5173"
+	}
+	return fmt.Sprintf("http://localhost:%s", port)
 }
 
 // EmbedAssets proxies requests to the Vite dev server in development mode.

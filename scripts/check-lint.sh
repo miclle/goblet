@@ -8,4 +8,4 @@ if [ ! -x "$LINT_BIN" ]; then
   # Fall back to whatever is on PATH (e.g. installed via system package manager)
   LINT_BIN="$(command -v golangci-lint)" || { echo "golangci-lint not found; run: task update-tools"; exit 1; }
 fi
-"$LINT_BIN" run --build-tags=development ./...
+"$LINT_BIN" run --build-tags=development ./cmd/... ./internal/... ./pkg/... ./website

@@ -33,4 +33,4 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           version: v2.11
-          args: --timeout=5m --build-tags=development
+          args: --timeout=5m --build-tags=development ./cmd/... ./internal/... ./pkg/... ./website

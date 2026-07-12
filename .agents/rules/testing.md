@@ -20,6 +20,7 @@ These rules apply to Go tests, frontend tests, and verification commands.
 
 - Use Vitest and keep tests near the code they cover.
 - Test API clients, hooks, route helpers, and state derivation before pure layout details.
+- Add focused tests for shared UI primitives that wrap headless behavior such as Base UI tabs, menus, or dialogs.
 - Mock network calls through the API boundary rather than hard-coding backend URLs.
 
 ## Verification

@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
 
 // NotFound is the 404 error page.
 function NotFound() {
@@ -7,8 +8,8 @@ function NotFound() {
       <div className="text-center space-y-4">
         <h1 className="text-6xl font-bold text-foreground">404</h1>
         <p className="text-muted-foreground">Page not found</p>
-        <NavLink to="/" className="text-primary hover:underline text-sm">
-          Back to Home
+        <NavLink to="/">
+          <Button variant="outline">Back to Home</Button>
         </NavLink>
       </div>
     </div>

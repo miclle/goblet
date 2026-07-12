@@ -16,7 +16,8 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 - React 19, TypeScript 6, Vite 8, Tailwind CSS 4
 - React Router v7, React Query v5
-- [shadcn/ui](https://ui.shadcn.com/) v4 component library
+- [shadcn/ui](https://ui.shadcn.com/) v4 component style with local primitives
+- [Base UI](https://base-ui.com/) for headless accessible component behavior
 - Vitest 4 for unit testing
 
 ## Requirements
@@ -96,10 +97,10 @@ task update-tools   # Install/update reflex, staticcheck, golangci-lint
 │   ├── assets_production.go        → Prod: //go:embed build/*
 │   └── src/
 │       ├── api/                    → API client (Axios)
-│       ├── components/ui/          → shadcn/ui components
+│       ├── components/app/         → App shell and product-level composition
+│       ├── components/ui/          → shadcn-style primitives + Base UI wrappers
 │       ├── context/                → React context providers
 │       ├── hooks/                  → Custom React hooks
-│       ├── layouts/                → Page layout components
 │       ├── lib/                    → Utilities (React Query client, cn helper)
 │       ├── types/                  → TypeScript type definitions
 │       └── views/                  → Page-level route components

@@ -9,7 +9,7 @@ A Go + React single-page application template that compiles into a single binary
 ## Tech Stack
 
 - Backend: Go 1.26 + `fox-gonic/fox` + GORM + PostgreSQL (default) / MySQL
-- Frontend: React 19 + TypeScript 6 + Vite 8 + Tailwind CSS 4 + shadcn/ui
+- Frontend: React 19 + TypeScript 6 + Vite 8 + Tailwind CSS 4 + shadcn/ui + Base UI
   - React Router v7 (routing)
   - React Query v5 (server state)
   - Axios (HTTP client)
@@ -65,8 +65,9 @@ website/                      # Embedded SPA (frontend + go:embed glue)
       ├── api/
       ├── types/
       ├── views/
-      ├── components/ (includes ui/ by shadcn)
-      ├── layouts/
+      ├── components/
+      │   ├── app/             #   App shell and product-level composition
+      │   └── ui/              #   shadcn-style primitives and Base UI wrappers
       ├── hooks/
       ├── context/
       └── lib/
@@ -91,7 +92,10 @@ scripts/                      # Shell helpers invoked by Taskfile (build, check,
 - API calls go in `website/src/api/`
 - Type definitions go in `website/src/types/`
 - Pages go in `website/src/views/`
-- Prefer reusing existing shadcn/ui components and Tailwind styles
+- App-wide layout/composition belongs in `website/src/components/app/`
+- Reusable UI primitives belong in `website/src/components/ui/`
+- Prefer local shadcn-style primitives, Tailwind tokens, Lucide icons, and Base UI wrappers over one-off markup
+- Wrap Base UI headless components in local `components/ui/*` modules before using them from pages
 
 ### Single Binary Embedding
 
@@ -103,8 +107,10 @@ scripts/                      # Shell helpers invoked by Taskfile (build, check,
 
 - Respect the existing layering and directory structure; do not reshape architecture for local changes
 - Run `task check` before committing
+- When changing frontend structure or UI primitives, update this file and `.agents/rules/frontend.md` together
 
 ## Pre-commit Checklist
 
 - Run `task check`; do not commit if it fails
 - Verify whether frontend API calls or types need to be updated accordingly
+- For UI behavior or primitive changes, run the focused Vitest tests or `cd website && npm test`

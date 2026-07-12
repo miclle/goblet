@@ -24,7 +24,10 @@ These rules keep Goblet useful as a small Go + React single-binary template.
 - API calls live in `website/src/api/`.
 - Shared HTTP contract types live in `website/src/types/`.
 - Page-level routes live in `website/src/views/`.
-- Reuse the existing React Router, React Query, shadcn/ui, Tailwind, and Axios patterns.
+- App shell and product-level composition live in `website/src/components/app/`.
+- Reusable UI primitives live in `website/src/components/ui/`.
+- Reuse the existing React Router, React Query, shadcn/ui, Base UI, Tailwind, and Axios patterns.
+- Pages should import local UI primitives rather than importing Base UI directly.
 - Do not hard-code backend origins in components; use the Vite proxy and shared API client.
 
 ## Change Checks

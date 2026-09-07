@@ -57,18 +57,20 @@ func devServerURLFromEnvironment() string {
 	return fmt.Sprintf("http://localhost:%s", port)
 }
 
+func newDevelopmentProxy(target *url.URL) *httputil.ReverseProxy {
+	return &httputil.ReverseProxy{
+		Rewrite: func(req *httputil.ProxyRequest) {
+			req.SetURL(target)
+			req.Out.Host = req.In.Host
+			req.SetXForwarded()
+			req.Out.Header.Set("X-Origin-Host", target.Host)
+		},
+	}
+}
+
 // EmbedAssets proxies requests to the Vite dev server in development mode.
 func EmbedAssets(router *fox.Engine) {
-	director := func(req *http.Request) {
-		req.Header.Add("X-Forwarded-Host", req.Host)
-		req.Header.Add("X-Origin-Host", origin.Host)
-		req.URL.Scheme = origin.Scheme
-		req.URL.Host = origin.Host
-	}
-
-	proxy := &httputil.ReverseProxy{
-		Director: director,
-	}
+	proxy := newDevelopmentProxy(origin)
 
 	proxyHandler := func(c *fox.Context) {
 		proxy.ServeHTTP(c.Writer, c.Request)

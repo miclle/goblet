@@ -3,7 +3,7 @@
 # Idempotent: existing binaries are left alone.
 set -euo pipefail
 
-GOLANGCI_LINT_VERSION="v2.11.0"
+GOLANGCI_LINT_VERSION="v2.13.2"
 
 command -v reflex > /dev/null 2>&1 || go install github.com/cespare/reflex@latest
 command -v staticcheck > /dev/null 2>&1 || go install honnef.co/go/tools/cmd/staticcheck@latest

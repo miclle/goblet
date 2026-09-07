@@ -8,7 +8,7 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 **Backend:**
 
-- Go 1.26, [fox-gonic/fox](https://github.com/fox-gonic/fox) (Gin-based HTTP framework)
+- Go 1.27.1, [fox-gonic/fox](https://github.com/fox-gonic/fox) (Gin-based HTTP framework)
 - GORM with PostgreSQL (default) or MySQL driver
 - [Viper](https://github.com/spf13/viper) for configuration
 
@@ -22,7 +22,7 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 ## Requirements
 
-- Go 1.26+
+- Go 1.27.1+
 - Node.js 22.22+
 - PostgreSQL or MySQL
 - [Task](https://taskfile.dev/) (task runner)

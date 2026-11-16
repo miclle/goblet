@@ -32,6 +32,8 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 
 Run `task update-tools` to install `reflex`, `staticcheck`, and `golangci-lint`.
 
+GitHub Actions workflows use `ubuntu-24.04` to avoid automatic OS upgrades through `ubuntu-latest`. GitHub still maintains the runner image and its bundled tools within that Ubuntu release.
+
 ## Quick Start
 
 ```bash

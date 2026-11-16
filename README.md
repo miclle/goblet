@@ -18,12 +18,12 @@ The backend embeds the frontend build output via `//go:embed`, so production dep
 - React Router v8, React Query v5
 - [shadcn/ui](https://ui.shadcn.com/) v4 component style with local primitives
 - [Base UI](https://base-ui.com/) for headless accessible component behavior
-- Vitest 4 for unit testing
+- Vitest 5 for unit testing
 
 ## Requirements
 
 - Go 1.27.4+
-- Node.js 22.22+
+- Node.js 22.22.2+ (22.x), 24.15.0+ (24.x), or 26+; CI uses 22.22.2
 - PostgreSQL or MySQL
 - [Task](https://taskfile.dev/) (task runner)
 - `reflex` — file-watching hot reload for `task dev`
@@ -69,6 +69,8 @@ UI primitives are maintained in `website/src/components/ui/`; the shadcn CLI is 
 
 The frontend temporarily overrides `@typescript-eslint/typescript-estree`'s `minimatch` dependency to `11.0.8` to address [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249). Remove this override when the upstream dependency range includes a patched version, then rerun lint, type checks, tests, and `npm audit`.
 
+Keep TypeScript on 6.x until `typescript-eslint` supports TypeScript 7; version 8.72.2 currently requires TypeScript `<6.1.0`.
+
 ## Common Commands
 
 ```bash
@@ -83,6 +85,8 @@ task test           # Go tests (race + coverage) + frontend Vitest
 task clean          # Remove build artifacts
 task update-tools   # Install/update reflex, staticcheck, golangci-lint
 ```
+
+Database integration tests are opt-in. Set `GOBLET_TEST_POSTGRES_DSN` and/or `GOBLET_TEST_MYSQL_DSN` to disposable test databases, then run `go test -race -tags development -run TestDatabaseIntegration -v ./internal/database`. These tests connect, run schema migration twice, and verify CRUD inside a rolled-back transaction. Schema changes remain in the test database; never use production DSNs. Without these variables, the corresponding integration tests are skipped.
 
 ## Architecture
 

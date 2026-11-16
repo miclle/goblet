@@ -10,6 +10,7 @@ These rules apply to files under `website/src/`.
 - App-wide shell and composition components belong in `website/src/components/app/`.
 - Reusable UI primitives belong in `website/src/components/ui/`.
 - Route changes should update `website/src/router.tsx`, navigation, and NotFound behavior as needed.
+- Use React Router v8 APIs from `react-router` and `react-router/dom`.
 
 ## Server State
 

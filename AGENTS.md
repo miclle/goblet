@@ -10,7 +10,7 @@ A Go + React single-page application template that compiles into a single binary
 
 - Backend: Go 1.27.4 + `fox-gonic/fox` + GORM + PostgreSQL (default) / MySQL
 - Frontend: React 19 + TypeScript 6 + Vite 8 + Tailwind CSS 4 + shadcn/ui + Base UI
-  - React Router v7 (routing)
+  - React Router v8 (routing)
   - React Query v5 (server state)
   - Axios (HTTP client)
   - Lucide React (icons)
@@ -87,7 +87,7 @@ scripts/                      # Shell helpers invoked by Taskfile (build, check,
 
 ### Frontend
 
-- Routing: React Router v7
+- Routing: React Router v8
 - Server state management: React Query (`@tanstack/react-query`)
 - API calls go in `website/src/api/`
 - Type definitions go in `website/src/types/`

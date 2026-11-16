@@ -25,6 +25,7 @@ These rules apply to files under `website/src/`.
 - Maintain local UI primitives without adding the shadcn CLI as a project dependency; use a reviewed, pinned CLI version only when component generation is needed.
 - Use Base UI for headless accessible behavior when the interaction is non-trivial, such as tabs, menus, dialogs, comboboxes, or scroll areas.
 - Wrap Base UI components in local `website/src/components/ui/*` modules before pages import them.
+- Keep variant helpers private to component modules; move shared helpers to separate modules to preserve Fast Refresh boundaries.
 - Keep page components focused on product state and composition instead of repeating primitive styling.
 - Cover loading, empty, pending, success, and error states for user-facing data flows.
 - Use semantic controls: buttons for actions, labels for form fields, and accessible names for icon-only controls.

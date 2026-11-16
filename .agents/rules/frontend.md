@@ -21,6 +21,7 @@ These rules apply to files under `website/src/`.
 ## UI
 
 - Reuse existing shadcn-style primitives, Tailwind tokens, Lucide icons, and local layout patterns.
+- Maintain local UI primitives without adding the shadcn CLI as a project dependency; use a reviewed, pinned CLI version only when component generation is needed.
 - Use Base UI for headless accessible behavior when the interaction is non-trivial, such as tabs, menus, dialogs, comboboxes, or scroll areas.
 - Wrap Base UI components in local `website/src/components/ui/*` modules before pages import them.
 - Keep page components focused on product state and composition instead of repeating primitive styling.

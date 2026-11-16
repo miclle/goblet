@@ -55,6 +55,8 @@ task dev
 
 This starts both the Vite dev server (port 5173) and the Go server with hot reload (port 9000).
 
+Vite listens on `127.0.0.1` and uses its default host allowlist. For intentional LAN access, start Vite with `npm run dev -- --host 0.0.0.0` from `website/`. If accessing through a custom hostname (including the Go development proxy), add that trusted hostname with `__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS`; do not set `allowedHosts: true`.
+
 To avoid port conflicts when running multiple local apps, override the ports per session:
 
 ```bash
@@ -62,6 +64,10 @@ GOBLET_HTTP_PORT=9100 GOBLET_VITE_PORT=3100 task dev
 ```
 
 `task dev` wires those values through Vite, the Vite `/api/v1` proxy, and the development asset reverse proxy.
+
+UI primitives are maintained in `website/src/components/ui/`; the shadcn CLI is not an installed project dependency. Existing components build and run without it. If component generation is needed, explicitly run a reviewed, pinned CLI version and inspect the generated changes.
+
+The frontend temporarily overrides `@typescript-eslint/typescript-estree`'s `minimatch` dependency to `11.0.8` to address [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249). Remove this override when the upstream dependency range includes a patched version, then rerun lint, type checks, tests, and `npm audit`.
 
 ## Common Commands
 

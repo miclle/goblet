@@ -96,6 +96,7 @@ scripts/                      # Shell helpers invoked by Taskfile (build, check,
 - Reusable UI primitives belong in `website/src/components/ui/`
 - Prefer local shadcn-style primitives, Tailwind tokens, Lucide icons, and Base UI wrappers over one-off markup
 - Wrap Base UI headless components in local `components/ui/*` modules before using them from pages
+- Maintain the local UI primitives without adding the shadcn CLI as a project dependency; use a reviewed, pinned CLI version only when component generation is needed
 
 ### Single Binary Embedding
 

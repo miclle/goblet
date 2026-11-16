@@ -22,8 +22,7 @@ export default defineConfig({
   server: {
     port: vitePort,
     strictPort: true,
-    host: "0.0.0.0",
-    allowedHosts: true,
+    host: "127.0.0.1",
     proxy: {
       "/api/v1": apiBaseURL,
     },
